@@ -1,3 +1,5 @@
-*~
- ac-comphist.dat
- network-security.data
+*
+!.gitignore
+!init.el
+!themes
+!README.md
