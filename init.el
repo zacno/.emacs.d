@@ -11,6 +11,9 @@
  )
 
 
+;; Shall fix dead keys??
+(require 'iso-transl)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Load theme
 (setq solarized-distinct-fringe-background t)
@@ -53,6 +56,20 @@
 ;; Highlight parentheses
 (show-paren-mode 1)
 
+;; Always center the line
+;; keep the cursor centered to avoid sudden scroll jumps
+;;(require 'centered-cursor-mode)
+
+;; disable in terminal modes
+;; http://stackoverflow.com/a/6849467/519736
+;; also disable in Info mode, because it breaks going back with the backspace key
+;; (define-global-minor-mode my-global-centered-cursor-mode centered-cursor-mode
+;;   (lambda ()
+;;     (when (not (memq major-mode
+;;                      (list 'Info-mode 'term-mode 'eshell-mode 'shell-mode 'erc-mode)))
+;;       (centered-cursor-mode))))
+;; (my-global-centered-cursor-mode 1)
+
 ;; Crux have multiple QoL improvments
 
 ;; Setup for autocomplete
@@ -62,6 +79,9 @@
 (dolist (hook '(text-mode-hook))
   (add-hook hook (lambda () (flyspell-mode 1))))
 
+;;(define-key flyspell-mode-map (kbd "C-;") #'flyspell-popup-correct)
+;;(define-key flyspell-mode-map (kbd "<f8>") #'flyspell-popup-correct)
+(add-hook 'flyspell-mode-hook #'flyspell-popup-auto-correct-mode)
 (global-set-key (kbd "<f8>") 'ispell-word)
 (defun flyspell-check-next-highlighted-word ()
   "Custom Function to spell check next highlighted word"
@@ -72,8 +92,9 @@
 (global-set-key (kbd "<f9>") 'flyspell-prog-mode)
 
 (when (executable-find "hunspell")
-   (setq-default ispell-program-name "hunspell")
-   (setq ispell-really-hunspell t))
+  (setq-default ispell-program-name "hunspell")
+  (setq ispell-really-hunspell t))
+
 
 (require 'langtool)
 (setq langtool-language-tool-jar "/home/zacharias/Documents/Software/LanguageTool-4.7/languagetool-commandline.jar"
@@ -100,9 +121,6 @@
 (setq reftex-plug-into-AUCTeX t)
 
 (setq TeX-PDF-mode t)
-
-;; Makes a preview pane for a latex file when opened
-(latex-preview-pane-enable)
 
 ;; Set up for C-a to go to first non whitespace, as M-m does
 ;; and behave normally if pressed agai
@@ -147,6 +165,13 @@ point reaches the beginning or end of the buffer, stop there."
 (setq jedi:complete-on-dot t)
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; C/C++ autocomplete
+(add-hook 'c++-mode-hook 'irony-mode)
+(add-hook 'c-mode-hook 'irony-mode)
+(add-hook 'objc-mode-hook 'irony-mode)
+
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -154,5 +179,5 @@ point reaches the beginning or end of the buffer, stop there."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (latex-preview-pane crux highlight-parentheses centaur-tabs langtool evil auctex yasnippet solarized-theme s pyvenv markdown-mode jedi-direx highlight-indentation find-file-in-project company)))
+    (irony pandoc-mode popup-complete flyspell-popup centered-cursor-mode ein jupyter latex-preview-pane crux highlight-parentheses centaur-tabs langtool evil auctex yasnippet solarized-theme s pyvenv markdown-mode jedi-direx highlight-indentation find-file-in-project company)))
  '(show-paren-mode t))
